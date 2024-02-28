@@ -5,7 +5,7 @@ import { MerkleTree } from "merkletreejs";
 import keccak256 from "keccak256";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { PikaMoon, ClaimBonusPika } from "../typechain-types";
+import { Token, ClaimBonusToken } from "../typechain-types";
 function encodeLeaf(address: Addressable | String, amount: bigint) {
   // Same as `abi.encode` in Solidity
   let abi = ethers.AbiCoder.defaultAbiCoder();
@@ -16,11 +16,11 @@ describe("Check if merkle root is working", function () {
   async function deployICOFixture() {
     const [owner, addr1, addr2, addr3, addr4, addr5] =
       await ethers.getSigners();
-    const ClaimBonusPika = await ethers.getContractFactory("ClaimBonusPika");
-    const ICOToken = await ethers.getContractFactory("PikaMoon");
-    const token: PikaMoon = await ICOToken.deploy(
-      "PIKAMoon",
-      "PIKA",
+    const ClaimBonusToken = await ethers.getContractFactory("ClaimBonusToken");
+    const ICOToken = await ethers.getContractFactory("Token");
+    const token: Token = await ICOToken.deploy(
+      "TOKEN",
+      "TOKEN",
       toWei(50_000_000_000),
       owner.address,
       owner.address,
@@ -49,17 +49,17 @@ describe("Check if merkle root is working", function () {
     // Compute the Merkle Root
     const root = merkleTree.getHexRoot();
 
-    const claimPika: ClaimBonusPika = await ClaimBonusPika.deploy(
+    const claimToken: ClaimBonusToken = await ClaimBonusToken.deploy(
       token.target,
       root,
     );
-    await token.mint(claimPika.target, toWei(50_000));
+    await token.mint(claimToken.target, toWei(50_000));
 
-    return { token, merkleTree, list, claimPika, owner, addr1 };
+    return { token, merkleTree, list, claimToken, owner, addr1 };
   }
   describe("", async () => {
-    let token: PikaMoon,
-      claimPika: ClaimBonusPika,
+    let token: Token,
+      claimToken: ClaimBonusToken,
       owner: HardhatEthersSigner,
       addr1: HardhatEthersSigner,
       merkleTree: MerkleTree,
@@ -67,7 +67,7 @@ describe("Check if merkle root is working", function () {
     before(async () => {
       let fixture = await loadFixture(deployICOFixture);
       token = fixture?.token;
-      claimPika = fixture?.claimPika;
+      claimToken = fixture?.claimToken;
       merkleTree = fixture?.merkleTree;
       list = fixture?.list;
       addr1 = fixture?.addr1;
@@ -81,11 +81,11 @@ describe("Check if merkle root is working", function () {
       const proof = merkleTree.getHexProof(leaf);
 
       await expect(
-        claimPika.connect(addr1).claimBonusPika(toWei(3), proof),
+        claimToken.connect(addr1).claimBonusToken(toWei(3), proof),
       ).to.be.revertedWith("Invalid markle proof");
-      await claimPika.connect(addr1).claimBonusPika(toWei(2), proof);
+      await claimToken.connect(addr1).claimBonusToken(toWei(2), proof);
       await expect(
-        claimPika.connect(addr1).claimBonusPika(toWei(2), proof),
+        claimToken.connect(addr1).claimBonusToken(toWei(2), proof),
       ).to.be.revertedWith("already claimed");
       let tax = await token.calculateTax(owner.address, toWei(2));
 
@@ -95,7 +95,7 @@ describe("Check if merkle root is working", function () {
     });
 
     it("withdraw tokens", async () => {
-      await claimPika.withdrawTokens();
+      await claimToken.withdrawTokens();
     });
     it("change markle root", async () => {
       // Create an array of elements you wish to encode in the Merkle Tree
@@ -114,9 +114,9 @@ describe("Check if merkle root is working", function () {
 
       // Compute the Merkle Root
       const root = merkleTree.getHexRoot();
-      await claimPika.updateMerkleRoot(root);
+      await claimToken.updateMerkleRoot(root);
 
-      let getRoot = await claimPika.merkleRoot();
+      let getRoot = await claimToken.merkleRoot();
       expect(getRoot).to.be.eq(root);
     });
   });

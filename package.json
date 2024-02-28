@@ -1,20 +1,18 @@
 {
-  "name": "pikamoon-staking",
+  "name": "markel-tree-demo",
   "version": "1.0.0",
-  "author": "Asadullah Khan <asadullah.khan@tigercrypto.uk>",
+  "author": "Asadullah Khan <asadmuhammad427@gmail.com>",
   "license": "MIT",
-  "description": "This project is about staking smart contract for pikamoon token",
+  "description": "This project is about markel tree demo",
   "keywords": [
-    "staking",
-    "defi",
-    "erc20",
     "solidity",
-    "blockchain",
-    "smart contracts"
+    "blockchain", 
+    "smart contracts",
+    "Merkle tree"
   ],
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/orbitcosmos/pikamoon-staking"
+    "url": "https://github.com/asad97290/merkel-tree-demo"
   },
   "scripts": {
     "preinstall": "npx only-allow yarn",
