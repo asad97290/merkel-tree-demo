@@ -21,9 +21,7 @@ describe("Check if merkle root is working", function () {
     const token: Token = await ICOToken.deploy(
       "TOKEN",
       "TOKEN",
-      toWei(50_000_000_000),
-      owner.address,
-      owner.address,
+      toWei(50_000_000_000)
     );
 
     // Create an array of elements you wish to encode in the Merkle Tree
@@ -81,16 +79,14 @@ describe("Check if merkle root is working", function () {
       const proof = merkleTree.getHexProof(leaf);
 
       await expect(
-        claimToken.connect(addr1).claimBonusToken(toWei(3), proof),
+        claimToken.connect(addr1).claimBonus(toWei(3), proof),
       ).to.be.revertedWith("Invalid markle proof");
-      await claimToken.connect(addr1).claimBonusToken(toWei(2), proof);
+      await claimToken.connect(addr1).claimBonus(toWei(2), proof);
       await expect(
-        claimToken.connect(addr1).claimBonusToken(toWei(2), proof),
-      ).to.be.revertedWith("already claimed");
-      let tax = await token.calculateTax(owner.address, toWei(2));
-
+        claimToken.connect(addr1).claimBonus(toWei(2), proof),
+      ).to.be.revertedWith("already claimed");     
       expect(await token.balanceOf(addr1.address)).to.be.equal(
-        toWei(2) - tax[0],
+        toWei(2)
       );
     });
 
