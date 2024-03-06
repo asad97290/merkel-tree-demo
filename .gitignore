@@ -1,5 +1,11 @@
 node_modules
-artifacts
+coverage
+.vscode
 cache
-typechain-types
+artifacts
 .env
+coverage.json
+typechain-types
+cache
+out
+cache_forge

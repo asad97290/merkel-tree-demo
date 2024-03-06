@@ -8,6 +8,7 @@ import "solidity-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-contract-sizer";
 import "@nomiclabs/hardhat-solhint";
+import "@nomicfoundation/hardhat-foundry";
 const alchemyKey = process.env.ALCHEMY_KEY;
 const pk = process.env.PK;
 
@@ -110,6 +111,12 @@ const config: HardhatUserConfig = {
         },
       },
       evmVersion: "paris",
+      metadata: {
+        // do not include the metadata hash, since this is machine dependent
+        // and we want all generated code to be deterministic
+        // https://docs.soliditylang.org/en/v0.7.6/metadata.html
+        bytecodeHash: 'none',
+      },
     },
   },
   docgen: {

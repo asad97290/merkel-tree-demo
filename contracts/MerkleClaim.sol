@@ -4,7 +4,7 @@ import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
-contract ClaimBonusToken is Ownable {
+contract MerkleClaim is Ownable {
     bytes32 public merkleRoot;
     address private token;
     mapping(address => bool) private isClaimable;
